@@ -245,7 +245,7 @@ export async function POST(request: NextRequest) {
     return new NextResponse(pdfBytes, {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${filename}"`,
+        "Content-Disposition": `inline; filename="${filename}"`,
       },
     })
   } catch (error) {

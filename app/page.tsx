@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { FileText } from 'lucide-react'
+import { FileText } from "lucide-react"
 import Image from "next/image"
 
 const TRUCK_MODELS = [
@@ -93,6 +93,8 @@ export default function CotizadorShacman() {
       if (response.ok) {
         const blob = await response.blob()
         const url = URL.createObjectURL(blob)
+
+        // Abrir en nueva pestaña
         window.open(url, "_blank")
       } else {
         alert("Error al generar el PDF")
@@ -108,6 +110,7 @@ export default function CotizadorShacman() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
+        {/* Header */}
         <div className="text-center mb-8">
           <div className="mb-4">
             <Image src="/logo-shacman.png" alt="SHACMAN Logo" width={200} height={80} className="mx-auto" />
@@ -117,6 +120,7 @@ export default function CotizadorShacman() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
+          {/* Formulario */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -230,6 +234,7 @@ export default function CotizadorShacman() {
             </CardContent>
           </Card>
 
+          {/* Resumen */}
           <div className="space-y-6">
             {selectedTruck && (
               <Card>
@@ -282,6 +287,7 @@ export default function CotizadorShacman() {
               </Card>
             )}
 
+            {/* Información */}
             <Card className="bg-blue-50 border-blue-200">
               <CardContent className="pt-6">
                 <div className="text-sm text-blue-800">
