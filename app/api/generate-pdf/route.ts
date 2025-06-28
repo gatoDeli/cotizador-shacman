@@ -226,13 +226,21 @@ export async function POST(request: NextRequest) {
     const pdfBytes = await finalPdfDoc.save()
 
     // Crear nombre del archivo: "Cotización Shacman - MODELO - CLIENTE - Fecha"
-    const cleanClientName = formData.cliente
-      .replace(/[^a-zA-Z0-9\s]/g, "")
-      .replace(/\s+/g, " ")
-      .trim()
+    // Función para limpiar caracteres especiales
+    const cleanString = (str: string) => {
+      return str
+        .normalize("NFD") // Descomponer caracteres acentuados
+        .replace(/[\u0300-\u036f]/g, "") // Remover acentos
+        .replace(/[^a-zA-Z0-9\s-]/g, "") // Solo letras, números, espacios y guiones
+        .replace(/\s+/g, " ") // Múltiples espacios a uno solo
+        .trim()
+    }
+
+    // Crear nombre del archivo sin caracteres especiales
+    const cleanClientName = cleanString(formData.cliente)
     const cleanModelName = selectedTruck.name.replace("SHACMAN ", "")
     const dateForFilename = new Date().toLocaleDateString("es-MX").replace(/\//g, "-")
-    const filename = `Cotización Shacman - ${cleanModelName} - ${cleanClientName} - ${dateForFilename}.pdf`
+    const filename = `Cotizacion Shacman - ${cleanModelName} - ${cleanClientName} - ${dateForFilename}.pdf`
 
     return new NextResponse(pdfBytes, {
       headers: {
