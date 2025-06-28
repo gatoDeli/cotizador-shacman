@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Share, Mail, MessageCircle, FileText } from "lucide-react"
+import { FileText } from 'lucide-react'
 import Image from "next/image"
 
 const TRUCK_MODELS = [
@@ -41,7 +41,6 @@ export default function CotizadorShacman() {
     notas: "",
   })
   const [isGenerating, setIsGenerating] = useState(false)
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -94,9 +93,6 @@ export default function CotizadorShacman() {
       if (response.ok) {
         const blob = await response.blob()
         const url = URL.createObjectURL(blob)
-        setPdfUrl(url)
-
-        // Abrir en nueva pestaña
         window.open(url, "_blank")
       } else {
         alert("Error al generar el PDF")
@@ -109,33 +105,9 @@ export default function CotizadorShacman() {
     }
   }
 
-  const shareWhatsApp = () => {
-    if (!pdfUrl) {
-      alert("Primero genera la cotización")
-      return
-    }
-
-    const message = `Cotización SHACMAN - ${selectedTruck?.name}\nCliente: ${formData.cliente}\nCantidad: ${formData.cantidad} unidad${formData.cantidad !== 1 ? "es" : ""}\nTotal: ${formatPrice(total)}`
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, "_blank")
-  }
-
-  const shareEmail = () => {
-    if (!pdfUrl) {
-      alert("Primero genera la cotización")
-      return
-    }
-
-    const subject = `Cotización SHACMAN - ${selectedTruck?.name}`
-    const body = `Estimado/a ${formData.cliente},\n\nAdjunto encontrarás la cotización para ${formData.cantidad} unidad${formData.cantidad !== 1 ? "es" : ""} del ${selectedTruck?.name}.\n\nTotal: ${formatPrice(total)}\n\nSaludos,\n${formData.vendedor}`
-    const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-    window.open(mailtoUrl)
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4 max-w-4xl">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="mb-4">
             <Image src="/logo-shacman.png" alt="SHACMAN Logo" width={200} height={80} className="mx-auto" />
@@ -145,7 +117,6 @@ export default function CotizadorShacman() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Formulario */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -259,9 +230,7 @@ export default function CotizadorShacman() {
             </CardContent>
           </Card>
 
-          {/* Resumen y Acciones */}
           <div className="space-y-6">
-            {/* Resumen */}
             {selectedTruck && (
               <Card>
                 <CardHeader>
@@ -313,30 +282,6 @@ export default function CotizadorShacman() {
               </Card>
             )}
 
-            {/* Acciones de Compartir */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Share className="w-5 h-5" />
-                  Compartir Cotización
-                </CardTitle>
-                <CardDescription>
-                  {pdfUrl ? "Comparte la cotización generada" : "Genera primero la cotización para compartir"}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button onClick={shareWhatsApp} disabled={!pdfUrl} variant="outline" className="w-full bg-transparent">
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Compartir por WhatsApp
-                </Button>
-                <Button onClick={shareEmail} disabled={!pdfUrl} variant="outline" className="w-full bg-transparent">
-                  <Mail className="w-4 h-4 mr-2" />
-                  Compartir por Email
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Información */}
             <Card className="bg-blue-50 border-blue-200">
               <CardContent className="pt-6">
                 <div className="text-sm text-blue-800">

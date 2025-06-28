@@ -225,10 +225,19 @@ export async function POST(request: NextRequest) {
     // Generar el PDF final
     const pdfBytes = await finalPdfDoc.save()
 
+    // Crear nombre del archivo: "Cotización Shacman - MODELO - CLIENTE - Fecha"
+    const cleanClientName = formData.cliente
+      .replace(/[^a-zA-Z0-9\s]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+    const cleanModelName = selectedTruck.name.replace("SHACMAN ", "")
+    const dateForFilename = new Date().toLocaleDateString("es-MX").replace(/\//g, "-")
+    const filename = `Cotización Shacman - ${cleanModelName} - ${cleanClientName} - ${dateForFilename}.pdf`
+
     return new NextResponse(pdfBytes, {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="Cotizacion-${selectedTruck.name.replace(/\s+/g, "-")}-${currentDate}.pdf"`,
+        "Content-Disposition": `attachment; filename="${filename}"`,
       },
     })
   } catch (error) {
